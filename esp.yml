@@ -1,0 +1,72 @@
+
+esphome:
+  name: esp
+  friendly_name: esp
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "aKsnsP1jDYpmiuAzJsk+p9PaLu1tKnKnHmLJ2WQfFSI="
+
+ota:
+  password: "052da391559eef3f273e46b2ba1d84ea"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Esp Fallback Hotspot"
+    password: "sJbLpjazsB55"
+
+#captive_portal:
+
+light:
+  - platform: status_led
+    name: "Switch state"
+    pin: GPIO2
+
+i2c:
+  sda: 21
+  scl: 22
+  scan: true
+  id: bus_a
+  
+sensor:
+  - platform: bme680
+    i2c_id: bus_a
+    temperature:
+      name: "Temperature"
+      oversampling: 16x
+    pressure:
+      name: "Pressure"
+    humidity:
+      name: "Humidity"
+    address: 0x77
+    update_interval: 60s
+
+output:
+  - id: fan_output
+    platform: gpio
+    pin: 4
+
+fan:
+  - platform: binary
+    output: fan_output
+    name: "Fan"
+
+
+switch:
+  - platform: gpio
+    pin: 5
+    name: "Heater"
+    
